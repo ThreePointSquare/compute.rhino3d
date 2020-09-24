@@ -62,7 +62,8 @@ namespace compute.geometry
     internal class OwinSelfHost
     {
         const string _env_port = "COMPUTE_BACKEND_PORT";
-        const string _env_bind = "COMPUTE_BIND_URLS";
+        const string _env_bind = "RHINO_COMPUTE_URLS";
+        const string _env_bind_old = "COMPUTE_BIND_URLS";
         string[] _bind;
         IDisposable _host;
 
@@ -70,7 +71,14 @@ namespace compute.geometry
         {
             var str = Env.GetEnvironmentString(_env_bind, null);
 
-            if (!string.IsNullOrEmpty(str))
+            if (str == null)
+            {
+                str = Env.GetEnvironmentString(_env_bind_old, null);
+                if (str != null)
+                    Log.Warning($"{_env_bind_old} is deprecated; use {_env_bind} instead");
+            }
+
+            if (str != null)
             {
                 _bind = str.Split(';');
 
