@@ -7,14 +7,16 @@ namespace compute.geometry
     static class Logging
     {
         static bool _enabled = false;
+
         public static void Init()
         {
             if (_enabled)
                 return;
 
-            var dir = Env.GetEnvironmentString("COMPUTE_LOG_PATH", Path.Combine(Path.GetTempPath(), "Compute", "Logs"));
-            var path = Path.Combine(dir, "log-geometry-.txt"); // log-20180925.txt, etc.
-            var limit = Env.GetEnvironmentInt("COMPUTE_LOG_RETAIN_DAYS", 10);
+            var default_dir = Path.Combine(Path.GetTempPath(), "Compute", "Logs");
+            var dir = Env.GetEnvironmentString("RHINO_COMPUTE_LOG_PATH", default_dir);
+            var path = Path.Combine(dir, "log-geometry-.txt"); // log-geometry-20180925.txt, etc.
+            var limit = Env.GetEnvironmentInt("RHINO_COMPUTE_LOG_RETAIN_DAYS", 10);
 
             var logger = new LoggerConfiguration()
 #if DEBUG
