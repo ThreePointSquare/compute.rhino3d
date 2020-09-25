@@ -100,6 +100,7 @@ namespace compute.geometry
         public void Start()
         {
             Log.Information("Launching RhinoCore library as {User}", Environment.UserName);
+            Log.Debug("Rhino system directory: {Path}", RhinoInside.Resolver.RhinoSystemDirectory);
             Program.RhinoCore = new Rhino.Runtime.InProcess.RhinoCore(null, Rhino.Runtime.InProcess.WindowStyle.NoWindow);
 
             Rhino.Runtime.HostUtils.OnExceptionReport += (source, ex) => {
@@ -120,12 +121,9 @@ namespace compute.geometry
             {
                 _host = WebApp.Start<Startup>(options);
             }
-            catch (TargetInvocationException ex)
+            catch (TargetInvocationException ex) when (ex.InnerException is HttpListenerException hle)
             {
-                if (ex.InnerException is HttpListenerException hle)
-                    throw hle; // TODO: add link to troubleshooting
-
-                throw ex;
+                throw hle;
             }
             catch
             {
